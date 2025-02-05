@@ -25,11 +25,5 @@ tidy_dataset_2 <- tidy_dataset %>%
 ggplot(tidy_dataset_2, aes(x = SEASON_FACTOR , y = SuccessRate, fill = Routes)) +
   geom_col(position = "dodge", show.legend = TRUE) +  
   scale_fill_brewer(palette = "Accent") + 
-  labs(subtitle = "Success Rates for Climbing Routes 1 and 2, by Seasons",
-       x = "Seasons",
-       y = "Success Rate",
-       fill = "Climbing Routes" +
-  theme_classic())
-
-
+  labs(x = "Seasons", y = "Success Rate", fill = "Climbing Routes", subtitle = "Success Rates for Climbing Routes 1 and 2, by Seasons", theme_classic()) 
 ```
