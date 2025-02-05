@@ -9,36 +9,27 @@ library(dplyr)
 exped_tidy <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-01-21/exped_tidy.csv')
 peaks_tidy <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-01-21/peaks_tidy.csv')
 ```
-```{r}
-# highpoint
-# Route 1, Route 2, Route 3, Route 4, Success 1, 2, 3, 4
-# O2USED, O2None
 
-library(dplyr)
+```{r}
 library(tidyverse)
 library(ggplot2)
-library(tidyr)
 
 tidy_dataset <- exped_tidy %>%
-  mutate(as.numeric("SUCCESS1","SUCCESS2","SUCCESS3")) %>%
+  mutate(as.numeric("SUCCESS1","SUCCESS2")) %>%
   group_by(SEASON_FACTOR) %>%
-  summarize("Route 1" =mean(as.numeric(SUCCESS1)),"Route 2" =mean(as.numeric(SUCCESS2)),success_rate3 =mean(as.numeric(SUCCESS3)))
+  summarize("Route 1" =mean((SUCCESS1)),"Route 2" =mean((SUCCESS2)))
 
-tidy_long <- tidy_dataset %>%
-  pivot_longer(cols = c("Route 1", "Route 2"), 
-               names_to = "Success_Type", 
-               values_to = "Success_Rate")
+tidy_dataset_2 <- tidy_dataset %>%
+  pivot_longer(cols = c("Route 1", "Route 2"), names_to = "Routes", values_to = "SuccessRate") 
 
-ggplot(tidy_long, aes(x = SEASON_FACTOR , y = Success_Rate, fill = Success_Type)) +
-  geom_bar(stat = "identity", position = "dodge", show.legend = TRUE) +  
+ggplot(tidy_dataset_2, aes(x = SEASON_FACTOR , y = SuccessRate, fill = Routes)) +
+  geom_col(position = "dodge", show.legend = TRUE) +  
   scale_fill_brewer(palette = "Accent") + 
   labs(subtitle = "Success Rates for Climbing Routes 1 and 2, by Seasons",
        x = "Seasons",
        y = "Success Rate",
-       fill = "Climbing Routes") +
-  theme_classic()
+       fill = "Climbing Routes" +
+  theme_classic())
 
-ggsave("tidytuesday.png",plot=tidy_long)
 
 ```
-
