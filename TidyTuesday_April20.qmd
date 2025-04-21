@@ -1,0 +1,46 @@
+---
+title: "TidyTuesday_April20"
+format: html
+editor: visual
+---
+
+```{r, message=FALSE, warning=FALSE} 
+# Reading data
+daily_accidents <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-22/daily_accidents.csv')
+daily_accidents_420 <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-22/daily_accidents_420.csv')
+```
+
+```{r, message=FALSE, warning=FALSE}
+# Visualization
+
+library(tidyverse)
+
+avg_fatalities <- mean(daily_accidents_420$fatalities_count, na.rm = TRUE)
+#view(avg_fatalities)
+
+avg_fatalities420 <- daily_accidents_420 %>%
+  filter(e420) %>%                             
+  summarize(average = mean(fatalities_count, na.rm = TRUE)) %>%
+  pull(average) 
+
+
+daily_accidents_420 %>%
+  ggplot(aes(x = date, y = fatalities_count, color = e420)) +
+  geom_point(size = 3, alpha = 0.7) +
+  scale_color_manual(
+    name   = "Period",
+    values = c("FALSE" = "grey", "TRUE" = "darkred"),
+    labels = c("All days", "April 4, after 4:20 PM")
+  ) + geom_point(size = 2, alpha = 0.7) +
+    geom_hline(yintercept = avg_fatalities, linetype   = "dashed", size = 0.5) +
+  geom_hline(yintercept = avg_fatalities420, linetype   = "dashed", size = 0.5, color = "darkred") +
+  labs(title = "Total count of fatalities due to car crashes (United States, 1992-2016)", subtitle= "Fatalities occuring on April 20 after 4 PM are highlighted", x = "Date of the accident", y = "Total count of fatalities") + theme_light()
+
+
+```
+> The plot shows the total count of fatalities due to car crashes in the US from 1992-2016. The red points show the amount of fatalities that ocurred on April 20 after 4:20 PM.  
+> The grey dashed line shows the mean of fatalities on all days, whereas the red dashed line shows the mean of fatalities on the April 4 after 4:20 PM.  
+> We can see that there is not a noticeable spike in the total fatalities in April 4 compared to other days, but it will be important to run statistical tests to be sure.   
+
+
+
