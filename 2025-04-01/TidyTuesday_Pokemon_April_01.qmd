@@ -1,0 +1,31 @@
+---
+title: "TidyTuesday_Pokemon_April_01"
+format: html
+editor: visual
+---
+
+```{r}
+# Loading data
+pokemon_df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
+```
+
+```{r}
+library(tidyverse)
+
+pokemon_stats <- pokemon_df %>%
+  group_by(type_1) %>%
+  summarize(avg_base_exp = mean(base_experience, na.rm = TRUE), avg_height = mean(height, na.rm = TRUE), avg_weight = mean(weight, na.rm = TRUE)) %>%
+  filter(!is.na(type_1))
+
+pokemon_stats %>%
+  pivot_longer(cols = c(avg_base_exp, avg_height, avg_weight), names_to = "metric", values_to = "value") %>%
+  mutate(metric = recode(metric, "avg_base_exp" = "Base Experience", "avg_height" = "Height", "avg_weight" = "Weight")) %>%
+  ggplot(aes(x = reorder(type_1, value), y = value, fill = type_1)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ metric, scales = "free_y") +
+  labs(title = "Pokémon stats by type", x = "Type", y = "Value") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45))
+```
+
+
