@@ -1,0 +1,30 @@
+---
+title: "TidyTuesday_May10"
+format: html
+editor: visual
+---
+
+```{r}
+vesuvius <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-05-13/vesuvius.csv')
+
+library(tidyverse)
+```
+> I was particularly excited about doing a Tidy Tuesday on Mount Vesuvius since I was able to take a picture with it when I visited Naples during my study abroad last semester!  
+
+```{r}
+vesuvius_summary <- vesuvius %>%
+  filter(!is.na(duration_magnitude_md)) %>%
+  group_by(year) %>%
+  summarize(avg_md = mean(duration_magnitude_md, na.rm = TRUE), n_quakes = n())
+
+ggplot(vesuvius_summary, aes(x = year, y = n_quakes)) +
+  geom_line(color = "darkred", size = 1.2) +
+  geom_point(aes(size = avg_md), color = "firebrick", alpha = 0.8) +
+  scale_size(range = c(2, 10)) +
+  scale_x_continuous(breaks = seq(min(vesuvius_summary$year), max(vesuvius_summary$year), 1)) +
+  labs(title = "Seismic activity at Mount Vesuvius",
+    subtitle = "Circle size shows the average magnitude per year for the seismic events",
+    x = "Year", y = "Number of seismic events recorded",
+    size = "Duration magnitude (Md)") + theme_minimal()
+```
+
